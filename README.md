@@ -1,137 +1,126 @@
-# 🎸 Horeg-Music
+# 🎸 Horeg Music
 
-A Discord music bot that plays audio from YouTube directly in your voice channel. Built with Python, discord.py, and yt-dlp.
+A simple Discord music bot that streams audio directly from YouTube into your voice channel. Built with `discord.py` and `yt-dlp`.
 
 ---
 
-## Features
+## ✨ Features
 
-- 🔎 Search and play music from YouTube by name or keyword
-- 📋 Per-server song queue — add songs and they play in order
+- 🔍 Search and stream audio from YouTube by keyword or URL
+- 📋 Per-server song queue system
 - ⏭️ Skip, clear, and view the queue
-- 🔄 Auto-plays the next song when the current one finishes
-- 🔌 Handles stream disconnects with automatic reconnection
-- 🛡️ Non-blocking audio search — bot stays responsive while loading tracks
+- 🔁 Auto-reconnect on stream interruption
+- 🚀 Non-blocking audio search (won't freeze the bot)
 
 ---
 
-## Commands
+## 🛠️ Tech Stack
 
-| Command | Description |
-|---|---|
-| `!play <query>` | Search YouTube and add the song to the queue |
-| `!skip` | Skip the currently playing song |
-| `!queue` | Show the current song queue |
-| `!clear` | Clear the entire queue |
-| `!join` | Join your current voice channel |
-| `!leave` | Leave the voice channel |
-| `!ping` | Check bot latency |
+- [discord.py](https://discordpy.readthedocs.io/) — Discord API wrapper
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) — YouTube audio extraction
+- [FFmpeg](https://ffmpeg.org/) — Audio streaming
+- [python-dotenv](https://pypi.org/project/python-dotenv/) — Environment variable management
 
 ---
 
-## Requirements
+## ⚙️ Setup
 
-- Python 3.9+
-- FFmpeg installed and available in your system PATH
-- A Discord bot token
-- The following Python packages (see `requirements.txt`)
+### 1. Clone the repository
 
----
-
-## Installation
-
-**1. Clone the repository**
 ```bash
-git clone https://github.com/yourusername/Horeg-Music.git
+git clone https://github.com/7bryan/Horeg-Music
 cd Horeg-Music
 ```
 
-**2. Create and activate a virtual environment**
+### 2. Create a virtual environment (recommended)
+
 ```bash
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS/Linux
-source venv/bin/activate
 ```
 
-**3. Install dependencies**
+Activate it:
+- **Windows:** `venv\Scripts\activate`
+- **Linux/macOS:** `source venv/bin/activate`
+
+### 3. Install Python dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-**4. Install FFmpeg**
+### 4. Install FFmpeg
 
-- **Windows**: Download from [ffmpeg.org](https://ffmpeg.org/download.html) and add to PATH
-- **macOS**: `brew install ffmpeg`
-- **Linux**: `sudo apt install ffmpeg`
+FFmpeg is required for audio streaming and must be installed separately on your system.
 
-**5. Set up your environment variables**
+- **Windows:** Download from [ffmpeg.org](https://ffmpeg.org/download.html), extract it, and add the `bin` folder to your system PATH
+- **Linux:** `sudo apt install ffmpeg`
+- **macOS:** `brew install ffmpeg`
 
-Create a `.env` file in the root directory:
-```
-DISCORD_TOKEN=your_bot_token_here
-```
-
-**6. Run the bot**
+Verify it's working:
 ```bash
-python bot.py
+ffmpeg -version
+```
+
+### 5. Configure environment variables
+
+Copy the example env file and fill in your token:
+
+```bash
+cp .env.example .env
+```
+
+Then open `.env` and replace the placeholder with your actual bot token:
+
+```env
+DISCORD_TOKEN=your_discord_bot_token_here
+```
+
+> Get your bot token from the [Discord Developer Portal](https://discord.com/developers/applications). Make sure your bot has the **Message Content Intent** and **Server Members Intent** enabled under the *Privileged Gateway Intents* section.
+
+### 6. Run the bot
+
+```bash
+python main.py
 ```
 
 ---
 
-## Getting a Discord Bot Token
+## 🎮 Commands
 
-1. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click **New Application** and give it a name
-3. Go to the **Bot** tab and click **Add Bot**
-4. Under **Token**, click **Copy**
-5. Paste it into your `.env` file
-6. Under **Privileged Gateway Intents**, enable **Message Content Intent** and **Server Members Intent**
-
-To invite the bot to your server, go to **OAuth2 > URL Generator**, select `bot`, then check `Connect`, `Speak`, and `Send Messages` permissions.
-
----
-
-## requirements.txt
-
-```
-discord.py
-yt-dlp
-python-dotenv
-PyNaCl
-```
+| Command | Description |
+|---|---|
+| `!join` | Bot joins your current voice channel |
+| `!leave` | Bot leaves the voice channel |
+| `!play <song name or URL>` | Adds a song to the queue and starts playing |
+| `!skip` | Skips the currently playing song |
+| `!queue` | Displays the current song queue |
+| `!clear` | Clears the entire queue |
+| `!ping` | Shows the bot's latency |
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-Horeg-Music/
-├── bot.py          # Main bot file
-├── .env            # Your Discord token (never commit this)
-├── .gitignore
-├── requirements.txt
-└── discord.log     # Auto-generated log file
+horeg-music/
+├── main.py           # Main bot logic
+├── requirements.txt  # Python dependencies
+├── .env              # Your secret token (never commit this!)
+├── .env.example      # Token template (safe to commit)
+├── .gitignore        # Ignores .env, venv, logs, etc.
+└── README.md
 ```
 
 ---
 
-## .gitignore
+## 📝 Notes
 
-Make sure your `.env` is never committed:
-```
-.env
-venv/
-discord.log
-__pycache__/
-*.pyc
-```
+- The bot uses `ytsearch:` to find audio by song name, so you can type a song title directly without a YouTube URL.
+- Each Discord server (guild) has its own independent queue.
+- If a track fails to load, the bot will automatically skip to the next song in the queue.
 
 ---
 
-## License
+## 📜 License
 
-MIT License — feel free to fork and modify.
+This project is open source and free to use. Do whatever you want with it. 🤘
