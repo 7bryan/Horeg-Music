@@ -4,6 +4,7 @@ import logging
 from dotenv import load_dotenv #load environment variable
 import os
 import yt_dlp
+import asyncio
 
 def get_audio_url(query):
     ydl_opts = {
@@ -20,6 +21,7 @@ def get_audio_url(query):
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN') #the discord token
 
+
 #basic logging
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 
@@ -31,6 +33,49 @@ intents.members = True
 
 #set up a bot
 bot = commands.Bot(command_prefix='!', intents=intents) #call the bot using !
+
+# song queues -> one list for each guild
+queues = {}
+
+def get_queue(guild_id):
+    if guild_id not in queues:
+        queues[guild_id] = []
+    return queues[guild_id]
+
+async def play_next(ctx):
+    queue = get_queue(ctx.guild.id)
+    if not queue:
+        await ctx.send("Queue is empty, add more songs!")
+        return
+
+    query = queue.pop(0) # grabbing the next song
+    vc = ctx.voice_client
+
+    # handling error if yt-dlp finds nothing
+    try:
+        # prevent slow searches freeze the bot
+        audio_url = await bot.loop.run_in_executor(None, get_audio_url, query)
+    except Exception as e:
+        await ctx.send(f"Skipping - couldn't load track: {e}")
+        if queue:
+            await play_next(ctx) # try the next one if the current one failed
+        return
+
+    #s setting for disconnected music stream
+    ffmpeg_options = {
+        'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+        'options': '-vn'
+    }
+    source = discord.FFmpegPCMAudio(audio_url, **ffmpeg_options)
+
+    def after_playing(e):
+        if e:   
+            print(f"Error: {e}")
+        # schedule play_next from the non_async after callback
+        asyncio.run_coroutine_threadsafe(play_next(ctx), bot.loop)
+
+    vc.play(source, after=after_playing)
+    await ctx.send(f"Now Playing: **{query}**")
 
 @bot.event
 async def on_ready():
@@ -75,28 +120,37 @@ async def play(ctx, *, query):
 
 
     channel = ctx.author.voice.channel
-
     if ctx.voice_client is None:
         #connect to the voice channel
-        vc = await channel.connect()
-    else:
-        vc = ctx.voice_client
+        await channel.connect()
     
-    if vc.is_playing():
-        vc.stop()
+    queue = get_queue(ctx.guild.id)
+    queue.append(query)
+    await ctx.send(f"Added to queue: **{query}**")
 
-    audio_url = get_audio_url(query)
+    if not ctx.voice_client.is_playing():
+        await play_next(ctx)
 
-    # setting for solving disconnected music stream
-    ffmpeg_options = {
-            'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-            'options': '-vn'
-            }
+@bot.command()
+async def skip(ctx):
+    if ctx.voice_client and ctx.voice_client.is_playing():
+        ctx.voice_client.stop()
+        await ctx.send("Skipped!")
+    else:
+        await ctx.send("Nothing is played")
 
-    source =discord.FFmpegPCMAudio(audio_url, **ffmpeg_options)
+@bot.command()
+async def queue(ctx):
+    q = get_queue(ctx.guild.id)
+    if not q:
+        await ctx.send("Queue is empty")
+    else:
+        listed = "\n".join(f"{i+1}. {song}" for i, song in enumerate(q))
+        await ctx.send(f"**Queue:**\n{listed}")
 
-    vc.play(source, after=lambda e: print(f"Error: {e}" if e else "Done"))
-
-    await ctx.send(f"Playing {query}")
+@bot.command()
+async def clear(ctx):
+    queues[ctx.guild.id] = []
+    await ctx.send("Queue cleared")
     
 bot.run(token)
