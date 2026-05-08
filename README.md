@@ -105,8 +105,8 @@ python main.py
 horeg-music/
 ├── main.py           # Main bot logic
 ├── requirements.txt  # Python dependencies
-├── .env              # Your secret token (never commit this!)
-├── .env.example      # Token template (safe to commit)
+├── .env              # Your secret token 
+├── .env.example      # Token template 
 ├── .gitignore        # Ignores .env, venv, logs, etc.
 └── README.md
 ```
