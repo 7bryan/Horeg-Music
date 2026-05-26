@@ -1,20 +1,20 @@
-# 🎸 Horeg Music
+# Horeg Music
 
 A simple Discord music bot that streams audio directly from YouTube into your voice channel. Built with `discord.py` and `yt-dlp`.
 
 ---
 
-## ✨ Features
+## Features
 
-- 🔍 Search and stream audio from YouTube by keyword or URL
-- 📋 Per-server song queue system
-- ⏭️ Skip, clear, and view the queue
-- 🔁 Auto-reconnect on stream interruption
-- 🚀 Non-blocking audio search (won't freeze the bot)
+- Search and stream audio from YouTube by keyword or URL
+- Per-server song queue system
+- Skip, clear, and view the queue
+- Auto-reconnect on stream interruption
+- Non-blocking audio search (won't freeze the bot)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - [discord.py](https://discordpy.readthedocs.io/) — Discord API wrapper
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) — YouTube audio extraction
@@ -23,7 +23,7 @@ A simple Discord music bot that streams audio directly from YouTube into your vo
 
 ---
 
-## ⚙️ Setup
+## Setup
 
 ### 1. Clone the repository
 
@@ -85,7 +85,7 @@ python main.py
 
 ---
 
-## 🎮 Commands
+## Commands
 
 | Command | Description |
 |---|---|
@@ -99,7 +99,7 @@ python main.py
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 horeg-music/
@@ -113,7 +113,7 @@ horeg-music/
 
 ---
 
-## 📝 Notes
+## Notes
 
 - The bot uses `ytsearch:` to find audio by song name, so you can type a song title directly without a YouTube URL.
 - Each Discord server (guild) has its own independent queue.
@@ -121,6 +121,6 @@ horeg-music/
 
 ---
 
-## 📜 License
+## License
 
-This project is open source and free to use. Do whatever you want with it. 🤘
+This project is open source and free to use. Do whatever you want with it.
