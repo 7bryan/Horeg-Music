@@ -1,4 +1,4 @@
-# 🎸 Horeg Music 
+# Horeg Music 
 A Discord music bot that streams audio directly from YouTube into your voice channel. Built with `discord.py` and `yt-dlp`.
 
 ---
