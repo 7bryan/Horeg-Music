@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 # Config & Setup
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -24,6 +25,7 @@ intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 
 # Colors & Emoji Constants
+
 COLOR_PRIMARY = 0x9B59B6  # purple  – normal responses
 COLOR_SUCCESS = 0x2ECC71  # green   – joined / started playing
 COLOR_ERROR = 0xE74C3C  # red     – errors
@@ -45,6 +47,8 @@ EMOJI_TRASH = "🗑️"
 
 
 # Track Dataclass
+
+
 @dataclass
 class Track:
     query: str
@@ -66,6 +70,8 @@ class Track:
 
 
 # Per-Guild State
+
+
 @dataclass
 class GuildState:
     queue: list = field(default_factory=list)  # list[Track]
@@ -83,6 +89,7 @@ def get_state(guild_id: int) -> GuildState:
 
 
 # yt-dlp helpers
+
 YDL_OPTS = {
     "format": "bestaudio/best",
     "noplaylist": True,
@@ -116,6 +123,7 @@ FFMPEG_OPTIONS = {
     "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
     "options": "-vn",
 }
+
 
 # Embed helpers
 
@@ -171,6 +179,8 @@ def queued_embed(track: Track, position: int) -> discord.Embed:
 
 
 # Core playback
+
+
 async def play_next(ctx: commands.Context):
     state = get_state(ctx.guild.id)
     vc = ctx.voice_client
