@@ -1,5 +1,7 @@
-# Horeg Music 
-A Discord music bot that streams audio directly from YouTube into your voice channel. Built with `discord.py` and `yt-dlp`.
+# Horeg Music
+
+A Discord music bot that streams audio directly from YouTube into your voice channel.  
+Built with `discord.py` and `yt-dlp`, structured with modularity and maintainability in mind.
 
 ---
 
@@ -9,11 +11,11 @@ A Discord music bot that streams audio directly from YouTube into your voice cha
 - 📋 Per-server song queue system
 - ⏸️ Pause, resume, skip, and stop playback
 - 🔊 Live volume control (0–100)
-- 🗑️ Remove specific songs from the queue
-- 🎵 Now Playing embed with title, duration, thumbnail, and requester
-- 💬 Rich Discord embeds for all responses
-- 🤖 Auto-disconnect when left alone in a voice channel
-- ⚡ Non-blocking audio search (won't freeze the bot)
+- 🗑️ Remove specific songs from the queue by position
+- 🎵 Rich Now Playing embed with title, duration, thumbnail, and requester
+- 💬 Consistent Discord embeds for every response
+- 🤖 Auto-disconnect after 60s when left alone in a channel
+- ⚡ Non-blocking audio search (runs in executor — won't freeze the bot)
 - 🔁 Auto-reconnect on stream interruption
 
 ---
@@ -24,6 +26,29 @@ A Discord music bot that streams audio directly from YouTube into your voice cha
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) — YouTube audio extraction
 - [FFmpeg](https://ffmpeg.org/) — Audio streaming
 - [python-dotenv](https://pypi.org/project/python-dotenv/) — Environment variable management
+
+---
+
+## Project Structure
+
+```
+horeg-music/
+├── cogs/
+│   ├── music.py           # Music commands: !play, !skip, !queue, !volume, etc.
+│   └── general.py         # Utility commands: !ping, !help
+├── utils/
+│   ├── audio_handler.py   # yt-dlp fetching, per-guild state, playback engine
+│   └── embed_factory.py   # All Discord embed construction in one place
+├── models/
+│   └── track.py           # Track dataclass (title, URL, duration, requester…)
+├── config.py              # Centralized configuration (token, colors, FFmpeg opts)
+├── main.py                # Entry point — loads cogs and starts the bot
+├── requirements.txt
+├── .env
+├── .env.example
+├── .gitignore
+└── README.md
+```
 
 ---
 
@@ -54,32 +79,31 @@ pip install -r requirements.txt
 
 ### 4. Install FFmpeg
 
-FFmpeg is required for audio streaming and must be installed separately on your system.
+FFmpeg must be installed separately and available on your system PATH.
 
-- **Windows:** Download from [ffmpeg.org](https://ffmpeg.org/download.html), extract it, and add the `bin` folder to your system PATH
+- **Windows:** Download from [ffmpeg.org](https://ffmpeg.org/download.html), extract, and add the `bin/` folder to PATH
 - **Linux:** `sudo apt install ffmpeg`
 - **macOS:** `brew install ffmpeg`
 
-Verify it's working:
+Verify:
 ```bash
 ffmpeg -version
 ```
 
 ### 5. Configure environment variables
 
-Copy the example env file and fill in your token:
-
 ```bash
 cp .env.example .env
 ```
 
-Then open `.env` and replace the placeholder with your actual bot token:
+Open `.env` and add your bot token:
 
 ```env
 DISCORD_TOKEN=your_discord_bot_token_here
 ```
 
-> Get your bot token from the [Discord Developer Portal](https://discord.com/developers/applications). Make sure your bot has the **Message Content Intent** and **Server Members Intent** enabled under the *Privileged Gateway Intents* section.
+> Get your token from the [Discord Developer Portal](https://discord.com/developers/applications).  
+> Enable **Message Content Intent** and **Server Members Intent** under *Privileged Gateway Intents*.
 
 ### 6. Run the bot
 
@@ -104,35 +128,21 @@ python main.py
 | `!remove <position>` | Removes a song from the queue by its number |
 | `!np` / `!nowplaying` | Shows what's currently playing |
 | `!volume <0-100>` | Sets the playback volume |
-| `!ping` | Shows the bot's latency |
+| `!ping` | Shows the bot's response latency |
 | `!help` | Shows all available commands |
-
----
-
-## Project Structure
-
-```
-horeg-music/
-├── main.py           # Main bot logic
-├── requirements.txt  # Python dependencies
-├── .env              # Your secret token (don't commit this)
-├── .env.example      # Token template
-├── .gitignore        # Ignores .env, venv, logs, etc.
-└── README.md
-```
 
 ---
 
 ## Notes
 
-- The bot uses `ytsearch:` to find audio by song name, so you can type a song title directly without a YouTube URL.
-- Each Discord server (guild) has its own independent queue and volume setting.
-- If a track fails to load, the bot will automatically skip to the next song in the queue.
-- The bot will automatically disconnect after 60 seconds if left alone in a voice channel.
-- All bot responses use rich Discord embeds with color-coded status (green = success, red = error, orange = warning, blue = info).
+- Song search uses `ytsearch:` under the hood — just type a song name, no YouTube URL needed.
+- Each Discord server has its own independent queue and volume level.
+- Stream URLs are re-fetched right before playback since YouTube URLs expire.
+- If a track fails to load, the bot automatically skips to the next song.
+- The bot disconnects automatically after 60 seconds if left alone in a voice channel.
 
 ---
 
 ## License
 
-This project is open source and free to use. Do whatever you want with it.
+Open source — do whatever you want with it.
