@@ -34,12 +34,15 @@ Built with `discord.py` and `yt-dlp`, structured with modularity and maintainabi
 ```
 horeg-music/
 ├── cogs/
+    ├── __init__.py
 │   ├── music.py           # Music commands: !play, !skip, !queue, !volume, etc.
 │   └── general.py         # Utility commands: !ping, !help
 ├── utils/
+    ├── __init__.py
 │   ├── audio_handler.py   # yt-dlp fetching, per-guild state, playback engine
 │   └── embed_factory.py   # All Discord embed construction in one place
 ├── models/
+    ├── __init__.py
 │   └── track.py           # Track dataclass (title, URL, duration, requester…)
 ├── config.py              # Centralized configuration (token, colors, FFmpeg opts)
 ├── main.py                # Entry point — loads cogs and starts the bot
