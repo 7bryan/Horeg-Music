@@ -28,6 +28,9 @@ FFMPEG_OPTIONS: dict = {
 YDL_OPTIONS: dict = {
     "format": "bestaudio/best",
     "noplaylist": True,
+    # changes
+    "js_runtimes": {"node": {}},
+    # ---
     "quiet": True,
     "default_search": "ytsearch",
     "extract_flat": False,
